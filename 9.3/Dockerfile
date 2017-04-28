@@ -22,3 +22,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update -qq \
 RUN echo "plperl.on_init = 'use utf8; use re; package utf8; require \"utf8_heavy.pl\";'" >> /usr/share/postgresql/postgresql.conf.sample
 
 COPY initdb.sh /docker-entrypoint-initdb.d/
+
+COPY init-pg-entrypoint.sh /usr/local/bin/
+
+ENTRYPOINT ["init-pg-entrypoint.sh"]
+CMD ["postgres"]
