@@ -28,10 +28,10 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update -qq \
 
 RUN echo "plperl.on_init = 'use utf8; use re; package utf8; require \"utf8_heavy.pl\";'" >> /usr/share/postgresql/postgresql.conf.sample
 
-RUN wget https://github.com/omniti-labs/pg_jobmon/archive/v1.2.0.zip \
-    && unzip v1.2.0.zip \
-    && make -C pg_jobmon-1.2.0 \
-    && make NO_BGW=1 install -C pg_jobmon-1.2.0
+RUN wget https://github.com/omniti-labs/pg_jobmon/archive/v1.3.3.zip \
+    && unzip v1.3.3.zip \
+    && make -C pg_jobmon-1.3.3 \
+    && make NO_BGW=1 install -C pg_jobmon-1.3.3
 
 RUN wget https://github.com/keithf4/pg_partman/archive/v1.8.0.zip \
     && unzip v1.8.0.zip \
