@@ -22,6 +22,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update -qq \
     unzip \
     make \
     build-essential \
+    libssl-dev \
+    libkrb5-dev \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
   && truncate -s 0 /var/log/*log
@@ -38,6 +40,11 @@ RUN wget https://github.com/keithf4/pg_partman/archive/v1.8.0.zip \
     && make -C pg_partman-1.8.0 \
     && make install -C pg_partman-1.8.0
 
+RUN wget https://github.com/postgrespro/pg_pathman/archive/1.4.5.zip \
+    && unzip 1.4.5.zip \
+    && make -C pg_pathman-1.4.5 install USE_PGXS=1 \
+    && rm 1.4.5.zip \
+    && rm -rf pg_pathman-1.4.5
 ENV PATH /usr/bin:$PATH
 
 COPY initdb.sh /docker-entrypoint-initdb.d/
