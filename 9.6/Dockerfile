@@ -31,12 +31,16 @@ RUN echo "plperl.on_init = 'use utf8; use re; package utf8; require \"utf8_heavy
 RUN wget https://github.com/omniti-labs/pg_jobmon/archive/v1.3.3.zip \
     && unzip v1.3.3.zip \
     && make -C pg_jobmon-1.3.3 \
-    && make NO_BGW=1 install -C pg_jobmon-1.3.3
+    && make NO_BGW=1 install -C pg_jobmon-1.3.3 \
+    && rm v1.3.3.zip \
+    && rm -rf pg_jobmon-1.3.3
 
 RUN wget https://github.com/keithf4/pg_partman/archive/v1.8.0.zip \
     && unzip v1.8.0.zip \
     && make -C pg_partman-1.8.0 \
-    && make install -C pg_partman-1.8.0
+    && make install -C pg_partman-1.8.0 \
+    && rm v1.8.0.zip \
+    && rm -rf pg_partman-1.8.0
 
 ENV PATH /usr/bin:$PATH
 
