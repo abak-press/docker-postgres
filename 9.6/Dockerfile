@@ -16,7 +16,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update -qq \
     skytools3 \
     skytools3-ticker \
     libpq-dev \
-    postgresql-server-dev-all \
+    postgresql-server-dev-9.6 \
     postgresql-common \
     wget \
     unzip \
