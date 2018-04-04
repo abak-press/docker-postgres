@@ -37,12 +37,12 @@ RUN wget https://github.com/omniti-labs/pg_jobmon/archive/v1.3.3.zip \
     && rm v1.3.3.zip \
     && rm -rf pg_jobmon-1.3.3
 
-RUN wget https://github.com/keithf4/pg_partman/archive/v2.6.4.zip \
-    && unzip v2.6.4.zip \
-    && make -C pg_partman-2.6.4 \
-    && make install -C pg_partman-2.6.4 \
-    && rm v2.6.4.zip \
-    && rm -rf pg_partman-2.6.4
+RUN wget https://github.com/keithf4/pg_partman/archive/v3.1.0.zip \
+    && unzip v3.1.0.zip \
+    && make -C pg_partman-3.1.0 \
+    && make install -C pg_partman-3.1.0 \
+    && rm v3.1.0.zip \
+    && rm -rf pg_partman-3.1.0
 
 RUN wget https://github.com/postgrespro/pg_pathman/archive/1.4.5.zip \
     && unzip 1.4.5.zip \
