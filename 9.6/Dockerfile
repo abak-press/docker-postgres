@@ -10,7 +10,6 @@ RUN echo "Asia/Yekaterinburg" > /etc/timezone \
 RUN DEBIAN_FRONTEND=noninteractive apt-get update -qq \
   && apt-get install -yq --no-install-recommends \
     postgresql-plperl-9.6 \
-    python-software-properties \
     software-properties-common \
     postgresql-9.6-pgq3 \
     skytools3 \
@@ -28,29 +27,40 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update -qq \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
   && truncate -s 0 /var/log/*log
 
-RUN echo "plperl.on_init = 'use utf8; use re; package utf8; require \"utf8_heavy.pl\";'" >> /usr/share/postgresql/postgresql.conf.sample
+ARG PG_PATHMAN_VER=1.4.14
+ARG PG_JOBMON_VER=1.3.3
+ARG PG_PARTMAN_VER=3.1.0
 
-RUN wget https://github.com/omniti-labs/pg_jobmon/archive/v1.3.3.zip \
-    && unzip v1.3.3.zip \
-    && make -C pg_jobmon-1.3.3 \
-    && make NO_BGW=1 install -C pg_jobmon-1.3.3 \
-    && rm v1.3.3.zip \
-    && rm -rf pg_jobmon-1.3.3
+RUN wget https://github.com/omniti-labs/pg_jobmon/archive/v${PG_JOBMON_VER}.zip \
+    && unzip v${PG_JOBMON_VER}.zip \
+    && make -C pg_jobmon-${PG_JOBMON_VER} \
+    && make NO_BGW=1 install -C pg_jobmon-${PG_JOBMON_VER} \
+    && rm v${PG_JOBMON_VER}.zip \
+    && rm -rf pg_jobmon-${PG_JOBMON_VER} && \
 
-RUN wget https://github.com/keithf4/pg_partman/archive/v3.1.0.zip \
-    && unzip v3.1.0.zip \
-    && make -C pg_partman-3.1.0 \
-    && make install -C pg_partman-3.1.0 \
-    && rm v3.1.0.zip \
-    && rm -rf pg_partman-3.1.0
+  wget https://github.com/keithf4/pg_partman/archive/v${PG_PARTMAN_VER}.zip \
+    && unzip v${PG_PARTMAN_VER}.zip \
+    && make -C pg_partman-${PG_PARTMAN_VER} \
+    && make install -C pg_partman-${PG_PARTMAN_VER} \
+    && rm v${PG_PARTMAN_VER}.zip \
+    && rm -rf pg_partman-${PG_PARTMAN_VER} && \
 
-RUN wget https://github.com/postgrespro/pg_pathman/archive/1.4.5.zip \
-    && unzip 1.4.5.zip \
-    && make -C pg_pathman-1.4.5 install USE_PGXS=1 \
-    && rm 1.4.5.zip \
-    && rm -rf pg_pathman-1.4.5 \
-    && echo "shared_preload_libraries='pg_pathman'" >> /usr/share/postgresql/postgresql.conf.sample
+  wget https://github.com/postgrespro/pg_pathman/archive/${PG_PATHMAN_VER}.zip \
+    && unzip ${PG_PATHMAN_VER}.zip \
+    && make -C pg_pathman-${PG_PATHMAN_VER} install USE_PGXS=1 \
+    && rm ${PG_PATHMAN_VER}.zip \
+    && rm -rf pg_pathman-${PG_PATHMAN_VER}
+
+# Configure
+RUN echo "listen_addresses = '*'" >> /usr/share/postgresql/9.6/postgresql.conf.sample && \
+  echo "shared_preload_libraries='pg_pathman'" >> /usr/share/postgresql/9.6/postgresql.conf.sample && \
+  echo "plperl.on_init = 'use utf8; use re; package utf8; require \"utf8_heavy.pl\";'" >> /usr/share/postgresql/9.6/postgresql.conf.sample
+
+# Cleanup
+RUN apt-get purge -y build-essential \
+  make \
+  wget \
+  unzip
 
 ENV PATH /usr/bin:$PATH
-
 COPY initdb.sh /docker-entrypoint-initdb.d/
