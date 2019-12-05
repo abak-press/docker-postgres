@@ -30,6 +30,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update -qq \
 ARG PG_PATHMAN_VER=1.5.8
 ARG PG_JOBMON_VER=1.4.0
 ARG PG_PARTMAN_VER=4.2.2
+ARG PG_RUM_VER=1.3.6
 
 RUN wget https://github.com/keithf4/pg_jobmon/archive/v${PG_JOBMON_VER}.zip \
     && unzip v${PG_JOBMON_VER}.zip \
@@ -50,6 +51,12 @@ RUN wget https://github.com/keithf4/pg_jobmon/archive/v${PG_JOBMON_VER}.zip \
     && make -C pg_pathman-${PG_PATHMAN_VER} install USE_PGXS=1 \
     && rm ${PG_PATHMAN_VER}.zip \
     && rm -rf pg_pathman-${PG_PATHMAN_VER}
+
+RUN  wget https://github.com/postgrespro/rum/archive/${PG_RUM_VER}.zip \
+    && unzip ${PG_RUM_VER}.zip \
+    && make -C rum-${PG_RUM_VER} install USE_PGXS=1 \
+    && rm ${PG_RUM_VER}.zip \
+    && rm -rf rum-${PG_RUM_VER}
 
 # Configure
 RUN echo "listen_addresses = '*'" >> /usr/share/postgresql/11/postgresql.conf.sample && \
