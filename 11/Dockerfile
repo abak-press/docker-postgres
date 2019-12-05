@@ -18,7 +18,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update -qq \
     postgresql-server-dev-11 \
     postgresql-common \
     wget \
-    unzip \
     make \
     build-essential \
     libssl-dev \
@@ -32,30 +31,30 @@ ARG PG_JOBMON_VER=1.4.0
 ARG PG_PARTMAN_VER=4.2.2
 ARG PG_RUM_VER=1.3.6
 
-RUN wget https://github.com/keithf4/pg_jobmon/archive/v${PG_JOBMON_VER}.zip \
-    && unzip v${PG_JOBMON_VER}.zip \
+RUN wget https://github.com/keithf4/pg_jobmon/archive/v${PG_JOBMON_VER}.tar.gz \
+    && tar -xzvf v${PG_JOBMON_VER}.tar.gz \
     && make -C pg_jobmon-${PG_JOBMON_VER} \
     && make NO_BGW=1 install -C pg_jobmon-${PG_JOBMON_VER} \
-    && rm v${PG_JOBMON_VER}.zip \
+    && rm v${PG_JOBMON_VER}.tar.gz \
     && rm -rf pg_jobmon-${PG_JOBMON_VER} && \
 
-  wget https://github.com/keithf4/pg_partman/archive/v${PG_PARTMAN_VER}.zip \
-    && unzip v${PG_PARTMAN_VER}.zip \
+  wget https://github.com/keithf4/pg_partman/archive/v${PG_PARTMAN_VER}.tar.gz \
+    && tar -xzvf v${PG_PARTMAN_VER}.tar.gz \
     && make -C pg_partman-${PG_PARTMAN_VER} \
     && make install -C pg_partman-${PG_PARTMAN_VER} \
-    && rm v${PG_PARTMAN_VER}.zip \
+    && rm v${PG_PARTMAN_VER}.tar.gz \
     && rm -rf pg_partman-${PG_PARTMAN_VER} && \
 
-  wget https://github.com/postgrespro/pg_pathman/archive/${PG_PATHMAN_VER}.zip \
-    && unzip ${PG_PATHMAN_VER}.zip \
+  wget https://github.com/postgrespro/pg_pathman/archive/${PG_PATHMAN_VER}.tar.gz \
+    && tar -xzvf ${PG_PATHMAN_VER}.tar.gz \
     && make -C pg_pathman-${PG_PATHMAN_VER} install USE_PGXS=1 \
-    && rm ${PG_PATHMAN_VER}.zip \
+    && rm ${PG_PATHMAN_VER}.tar.gz \
     && rm -rf pg_pathman-${PG_PATHMAN_VER}
 
-RUN  wget https://github.com/postgrespro/rum/archive/${PG_RUM_VER}.zip \
-    && unzip ${PG_RUM_VER}.zip \
+RUN  wget https://github.com/postgrespro/rum/archive/${PG_RUM_VER}.tar.gz \
+    && tar -xzvf ${PG_RUM_VER}.tar.gz\
     && make -C rum-${PG_RUM_VER} install USE_PGXS=1 \
-    && rm ${PG_RUM_VER}.zip \
+    && rm ${PG_RUM_VER}.tar.gz \
     && rm -rf rum-${PG_RUM_VER}
 
 # Configure
@@ -66,8 +65,7 @@ RUN echo "listen_addresses = '*'" >> /usr/share/postgresql/11/postgresql.conf.sa
 # Cleanup
 RUN apt-get purge -y build-essential \
   make \
-  wget \
-  unzip
+  wget
 
 ENV PATH /usr/bin:$PATH
 COPY initdb.sh /docker-entrypoint-initdb.d/
